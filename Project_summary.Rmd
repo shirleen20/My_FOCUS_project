@@ -1,0 +1,153 @@
+---
+title: Genetics of stress- & domestication-related traits in _Bactrocera_ _tryoni_
+subtitle: 
+
+
+author:  Shirleen Prasad
+affiliation: CSIRO Land & Water
+photo: resources/img/me.jpg
+
+output: DSreport::project_summary
+---
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(
+  results = 'asis',
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = 'center'
+)
+
+#Load libraries
+library(tidyverse)
+library(gapminder)
+library(kableExtra)
+library(Rmisc)
+library(cowplot)
+library(gridExtra)
+
+# Import data:
+Data <- read_csv("data/Complete_Old_isofemalelines_data.csv")
+DF <-  summarySE(Data,measurevar = "Hours", groupvars = c("Line"))
+
+DF2 <- Data %>% 
+filter (Line =="NAB11"|Line=="NAB28")
+
+DF3 <- summarySE(data=DF2,measurevar = "Hours", groupvars = c("Line","Generation"))
+
+Data2 <- read_csv("data/Gwas_data_ 8hrs_removed.csv")
+```
+
+# Introduction
+My name is *Shirleen Prasad*. I am a 3rd year PhD candidate and I work in collaboration with Macquarie University and CSIRO. My PhD project investigates the genetic basis of reduced stress tolerance in domesticated Queensland fruit flies (Q-fly), _Bactrocera_ _tryoni_. Before joining Data School, I mostly used excel for data analysis and could only perform basic statistical analysis in R. Gaining competence in R through this course has given me confidence in using R independently. 
+
+# My Project
+The Sterile Insect Technique (SIT) is currently being investigated to control Q-fly populations in Australia. This technique involves rearing a large number of flies over multiple generations under laboratory conditions and releasing the sterilsed males in the wild. The wild populations are controlled when the released males successfully inseminate the wild females so they do not produce viable offspring. However, Q-flies reared in captive environments might have lower chances of survival, dispersal and mating in the field due to stressful environmental conditions such as low humidity, dehydration and starvation, compromising their efficacy as SIT agents. My goal is to elucidate the genetic basis of desiccation resistance and how it changes during domestication by making Q-fly isofemale lines from diverse geographical regions in Australia, characterizing them for desiccation tolerance, setting up mapping crosses between phenotypically divergent lines and using modern quantitative genomics to identify genomic regions associated with desiccation resistance. 
+
+## Preliminary results
+Abundant natural variation in desiccation resistance was observed amongst isofemale lines from regions Brisbane (BR), Mareeba (MB), Narrabri (NAB) and Utchee Creek (UT) as shown in Figure 1. Figure 2 shows that in a subset of these isofemale lines, phenotypic differences persisted over many generations, indicating that in those lines genetic variation in desiccation resistance has been successfully retained. The most and least tolerant isofemale lines exhibiting minimal intra-line variation were selected as the parental lines to initiate mapping crosses. Figure 3 shows phenotypic distribution of the F4, F5 and F6 progenies from the genetic cross.
+
+
+```{r mytable, out.width='100%', echo = F}
+knitr::kable(head(Data, n = 5), format = "html", caption = "Head of my data table") %>% 
+  kable_styling("striped")
+```
+
+
+**Plots from R**
+```{r standard-plot, out.width='60%', fig.align='center', fig.height= 4, fig.width=6, fig.cap="Effect of domestication on desiccation resistance in isofemale lines"}
+DF %>% 
+  ggplot(aes(x = Line, y = Hours, fill = Line)) +
+  geom_bar(stat = "identity", width = 0.8, position = position_dodge(width = 2)) +
+  geom_errorbar(aes(ymin=Hours-se, ymax=Hours+se, width = 0.4)) +
+  labs(x= "Isofemale lines",                   
+     y="Median knockdown time (hours)",                   
+     caption = "Brisbane (BR), Mareeba (MB), Narrabri (NAB), Utchee Creek (UT)")+
+     theme_bw()+
+     theme(axis.text=element_text(size=12),                
+           axis.title=element_text(size=10, face="bold", colour = "darkblue"),
+           plot.caption = element_text(hjust = 0.5))+ 
+    theme(legend.position = "none", plot.caption = element_text(color = "blue", face =    "italic", size=10)) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  annotate("text", x="NAB11", y=18, label = "Low resistant", angle = 90)+
+   annotate("text", x="NAB28", y=20, label = "High resistant", angle = 90)
+```
+
+
+
+```{r standard-plot2, out.width='60%', fig.align='center', fig.height= 4, fig.width=6, fig.cap="Desiccation resistance in high (NAB28) & low (NAB11) resistant lines screened over multiple generations"}
+
+DF3 %>% 
+ ggplot(aes(x = Generation , y = Hours, colour = Line)) +
+  geom_point() + geom_line() +
+  geom_errorbar(aes(ymin=Hours-se, ymax=Hours+se), width=.4, position=position_dodge(0.05)) +
+  scale_colour_manual(values=c('deeppink2', 'darkgreen'))+
+  theme_bw() +
+  scale_x_continuous(breaks = seq(7,18,by=1))+
+  theme(axis.title = element_text(size = 10, colour = "blue", face="bold"),
+        panel.border = element_rect(colour = "black"),
+        axis.text.x = element_text(angle = 90, size = 12), 
+        strip.text = element_text(size=50), axis.text.y = element_text(size = 12), 
+        strip.text.x = element_text(size = 12),
+        legend.position = "bottom") +
+  labs(y= "Median Knockdown time (hours)", colour = "Isofemale lines")
+```
+
+
+
+```{r standard-plot3, out.width='60%', fig.align='center', fig.height= 18, fig.width=14, fig.cap="Phenotypic distribution in F4, F5 & F6 progenies"}
+
+p1 <- Data2 %>% 
+  filter (Line =="QTLF4") %>% 
+  ggplot(aes(x=Hours,y=Mortality)) +
+  geom_bar(stat="identity",fill="blue", width=2)+
+  ggtitle("QTLF4")+
+  theme(axis.title.x = element_blank())+
+  ylab("Number of deaths recorded")+ #xlab("Number of hours after initiation of desiccation stress")+
+  ylim(0,120)+scale_x_continuous(breaks = seq(0,60,by=5))+
+  theme(axis.text=element_text(size=12),                
+        axis.title.y = element_text(size=16, face="bold", colour = "darkblue"),      
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold", colour = "darkblue"))+ 
+        background_grid(major = "xy", minor = "none")
+
+p2 <- Data2 %>% 
+  filter (Line =="QTLF5") %>% 
+  ggplot(aes(x=Hours,y=Mortality)) +
+  geom_bar(stat="identity",fill="blue", width=2, orientation = "x")+
+  ggtitle("QTLF5")+
+  theme(axis.title.x = element_blank())+
+  ylab("Number of deaths recorded")+ #xlab("Number of hours after initiation of desiccation stress")+
+  ylim(0,80)+ scale_x_continuous(breaks = seq(0,60,by=5))+
+  theme(axis.text=element_text(size=12),
+        axis.title.y = element_text(size=16, face="bold", colour = "darkblue"),
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold", colour = "darkblue"))+  
+        background_grid(major = "xy", minor = "none")
+
+p3 <- Data2 %>% 
+  filter (Line =="QTLF6") %>% 
+  ggplot(aes(x=Hours,y=Mortality)) +
+  geom_bar(stat="identity",fill="blue", width=2, orientation = "x")+
+  ggtitle("QTLF6")+
+  ylab("Number of deaths recorded") + xlab("Number of hours after initiation of desiccation stress")+
+  ylim(0,80)+ scale_x_continuous(breaks = seq(0,60,by=5))+
+  theme(axis.text = element_text(size=12),
+        axis.title.x = element_text(size=18, face="bold", colour = "darkblue"),
+        axis.title.y = element_text(size=16, face="bold", colour = "darkblue"),
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold", colour = "darkblue"))+
+        background_grid(major = "xy", minor = "none")
+grid.arrange(p1, p2, p3, nrow = 3)
+```  
+  
+# My Digital Toolbox
+For this project, I have used the R version `r getRversion()` and the digital tools *tidyverse*, *ggplot2*, *kableExtra*, *cowplot* and *rmisc*.
+
+
+## Favourite tool 
+![](resources/img/tidyverse.png){width=100px}, ![](resources/img/ggplot.png){width=100px}
+
+
+# My time went ...
+Most of my time went into tidying up and cleaning the raw data. This crucial step was a good learning experience for me. I learnt the importance of "tidy" data and explored the numerous functions in *tidyr* that could be used for transforming messy data. I used the *help functions* in R and tips on *stackoverflow* to resolve the challenges I encountered when coding.
+
+# My Data School Experience
+Learning R was essential for my PhD journey. Before joining Data School, I had limited skills for processing data in R and learning on my own had been very slow. The Data School has been an amazing experience and I have certainly improved my coding skills. I have been able to effectively apply the skills learnt at Data School to tidy and analyse my own data and share Git repositories with my team members for collaboration. The friendly environment and awesome efforts from the instructors provided a positive learning experience. I will continue to use R and apply the data processing skills I acquired at the Data School to analyse and report three large datasets from my PhD project: desiccation tolerance data; genomics data and metabolomics data. 
