@@ -49,7 +49,7 @@ Abundant natural variation in desiccation resistance was observed amongst isofem
 
 
 ```{r mytable, out.width='100%', echo = F}
-knitr::kable(head(Data, n = 5), format = "html", caption = "Head of my data table") %>% 
+knitr::kable(sample_frac(Data, 0.05), order("Bioassay"), format = "html", caption = "Random rows of my data table") %>% 
   kable_styling("striped")
 ```
 
