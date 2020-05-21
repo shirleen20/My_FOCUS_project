@@ -44,8 +44,14 @@ My name is *Shirleen Prasad*. I am a 3rd year Macquarie University PhD student b
 # My Project
 The Sterile Insect Technique (SIT) is currently being investigated to control Q-fly populations in Australia. This technique involves rearing a large number of flies over multiple generations under laboratory conditions and releasing the sterilsed males in the wild. The wild populations are controlled when the released males successfully inseminate the wild females so they do not produce viable offspring. However, Q-flies reared in captive environments might have lower chances of survival, dispersal and mating in the field due to stressful environmental conditions such as low humidity, dehydration and starvation, compromising their efficacy as SIT agents. My goal is to elucidate the genetic basis of desiccation resistance and how it changes during domestication by making Q-fly isofemale lines from diverse geographical regions in Australia, characterizing them for desiccation resistance, setting up mapping crosses between phenotypically divergent lines and using modern quantitative genomics to identify genomic regions associated with desiccation resistance. 
 
+
+```{r, fig.align='center', out.width="40%", fig.height= 2, fig.width=4, fig.show='hold', fig.cap='Q-fly females deposit eggs into ripening fruits reducing fruit quality & market access', echo=FALSE}
+knitr::include_graphics(path="resources/img/fly.png")
+```
+
+
 ## Preliminary results
-Abundant natural variation in desiccation resistance was observed amongst isofemale lines from regions Brisbane (BR), Mareeba (MB), Narrabri (NAB) and Utchee Creek (UT) as shown in Figure 1. Figure 2 shows that in a subset of these isofemale lines, phenotypic differences persisted over many generations, indicating that in those lines genetic variation in desiccation resistance has been successfully retained. The most and least tolerant isofemale lines exhibiting minimal intra-line variation were selected as the parental lines to initiate mapping crosses. Figure 3 shows phenotypic distribution of the F4, F5 and F6 progenies from the genetic cross.
+Abundant natural variation in desiccation resistance was observed amongst isofemale lines from regions Brisbane (BR), Mareeba (MB), Narrabri (NAB) and Utchee Creek (UT) as shown in Figure 2. Figure 3 shows that in a subset of these isofemale lines, phenotypic differences persisted over many generations, indicating that in those lines genetic variation in desiccation resistance has been successfully retained. The most and least tolerant isofemale lines exhibiting minimal intra-line variation were selected as the parental lines to initiate mapping crosses. Figure 4 shows phenotypic distribution of the F4, F5 and F6 progenies from the genetic cross.
 
 
 ```{r mytable, out.width='100%', echo = F}
